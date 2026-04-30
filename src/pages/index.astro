@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
 
-const base = import.meta.env.BASE_URL ?? "/plugin-sdk";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const entities = Object.values(dataModelV001.entities);
 const groups = [...new Set(entities.map((e) => e.group))];
 ---

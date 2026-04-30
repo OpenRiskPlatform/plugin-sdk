@@ -7,7 +7,7 @@ export interface Props {
 }
 
 const { title = "OpenRisk Plugin SDK", description = "Developer reference for OpenRisk plugin data model authors." } = Astro.props;
-const base = import.meta.env.BASE_URL ?? "/plugin-sdk";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const nav = [
   { href: base + "/", label: "Overview" },
   { href: base + "/entities/", label: "Entities" },

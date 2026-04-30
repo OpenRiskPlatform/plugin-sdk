@@ -1,7 +1,5 @@
 import { useState, useCallback } from "react";
 
-const SCHEMA_URL = "https://openriskplatform.github.io/plugin-sdk/schemas/data-model-v0.0.1.schema.json";
-
 const PLACEHOLDER = JSON.stringify(
     [
         {
@@ -23,7 +21,7 @@ type ValidationResult =
     | { status: "invalid"; errors: string[] }
     | { status: "error"; message: string };
 
-export function ValidatorApp() {
+export function ValidatorApp({ schemaUrl }: { schemaUrl: string }) {
     const [input, setInput] = useState(PLACEHOLDER);
     const [result, setResult] = useState<ValidationResult>({ status: "idle" });
 
@@ -43,7 +41,7 @@ export function ValidatorApp() {
             const { default: Ajv } = await import("ajv");
             const ajv = new Ajv({ allErrors: true });
 
-            const schemaRes = await fetch(SCHEMA_URL);
+            const schemaRes = await fetch(schemaUrl);
             if (!schemaRes.ok) throw new Error(`Could not fetch schema: ${schemaRes.status}`);
             const schema = await schemaRes.json();
 

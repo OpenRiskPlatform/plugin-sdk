@@ -1,9 +1,9 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dataModelV001 } from "../model/data-model-v0.0.1.ts";
 import type { EntitySpec, PropertySpec, TypedValueKind } from "../model/define-model.ts";
+import { SITE_BASE } from "../site.config.ts";
 
 const root = new URL("../", import.meta.url);
-const docsVersionDirectory = "v0-0-1";
 
 function path(name: string) {
   return new URL(name, root);
@@ -69,7 +69,7 @@ function schemaForModel() {
 
   return {
     $schema: "http://json-schema.org/draft-07/schema#",
-    $id: `https://openriskplatform.github.io/plugin-sdk/schemas/data-model-v${dataModelV001.version}.schema.json`,
+    $id: `${SITE_BASE}/schemas/data-model-v${dataModelV001.version}.schema.json`,
     title: `OpenRisk Data Model ${dataModelV001.version} Result`,
     description: dataModelV001.description,
     type: "array",
@@ -332,35 +332,19 @@ export async function search(inputs: { target: string }): Promise<DataModelEntit
 async function main() {
   await mkdir(path("schemas"), { recursive: true });
   await mkdir(path("examples"), { recursive: true });
-  await mkdir(path("src/content/docs/guides"), { recursive: true });
-  await mkdir(path(`src/content/docs/${docsVersionDirectory}/entities`), { recursive: true });
-  await mkdir(path(`src/content/docs/${docsVersionDirectory}/types`), { recursive: true });
 
   const schema = schemaForModel();
   await writeFile(path(`schemas/data-model-v${dataModelV001.version}.schema.json`), stableJson(schema));
 
   for (const entity of Object.values(dataModelV001.entities)) {
     await writeFile(
-      path(`src/content/docs/${docsVersionDirectory}/entities/${slugEntity(entity.id)}.mdx`),
-      entityPage(entity),
-    );
-    await writeFile(
       path(`examples/${slugEntity(entity.id)}-output.json`),
       stableJson(entityExample(entity, "common")),
     );
   }
 
-  await writeFile(path(`src/content/docs/${docsVersionDirectory}/index.mdx`), modelIndexPage());
-  await writeFile(path("src/content/docs/index.mdx"), overviewGuide());
-  await writeFile(path(`src/content/docs/${docsVersionDirectory}/types/index.mdx`), typeIndexPage());
-
-  for (const type of Object.keys(dataModelV001.typedValues) as TypedValueKind[]) {
-    await mkdir(path(`src/content/docs/${docsVersionDirectory}/types/${type}`), { recursive: true });
-    await writeFile(path(`src/content/docs/${docsVersionDirectory}/types/${type}/index.mdx`), typePage(type));
-  }
-
-  await writeFile(path("src/content/docs/guides/overview.mdx"), overviewGuide());
-  await writeFile(path("src/content/docs/guides/single-file-plugins.mdx"), singleFileGuide());
+  console.log(`Generated schema: schemas/data-model-v${dataModelV001.version}.schema.json`);
+  console.log(`Generated ${Object.keys(dataModelV001.entities).length} example files in examples/`);
 }
 
 await main();
