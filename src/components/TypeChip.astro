@@ -1,0 +1,12 @@
+---
+const { type, spec, href = `../types/${type}/` } = Astro.props;
+---
+
+<a class="or-type-chip" href={href} aria-label={`Open ${spec?.label ?? type} type details`}>
+  <span>{spec?.label ?? type}</span>
+  <span class="or-type-popover" role="tooltip">
+    <strong>{spec?.label ?? type}</strong>
+    <em>{spec?.description ?? "Typed value"}</em>
+    <code>{type}</code>
+  </span>
+</a>

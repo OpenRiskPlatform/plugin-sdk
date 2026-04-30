@@ -1,0 +1,32 @@
+---
+title: Single-file plugins
+description: How to use the inline TypeScript data model helper.
+---
+
+# Single-file plugins
+
+OpenRisk currently executes plugins as one TypeScript or JavaScript file without bundling. That means plugin authors should inline the canonical helper instead of importing a package.
+
+## Workflow
+
+1. Copy `model/openrisk-types.ts` into the top of the plugin file.
+2. Implement named entrypoint exports declared in `plugin.json`.
+3. Return `DataModelEntity[]` from each data-producing entrypoint.
+4. Validate the JSON output against `schemas/data-model-v0.0.1.schema.json`.
+
+## Example
+
+```ts
+export async function search(inputs: { target: string }): Promise<DataModelEntity[]> {
+  return [
+    buildPerson({
+      id: `example:${inputs.target}`,
+      payload: {
+        name: inputs.target,
+        isPep: false,
+        isSanctioned: false,
+      },
+    }),
+  ];
+}
+```

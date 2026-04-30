@@ -1,0 +1,21 @@
+[
+  {
+    "$modelVersion": "0.0.1",
+    "$entity": "entity.detectedEntity",
+    "$id": "example:detectedEntity",
+    "$props": {
+      "name": [
+        {
+          "$type": "string",
+          "value": "Jane Example"
+        }
+      ],
+      "description": [
+        {
+          "$type": "string",
+          "value": "Related person detected in source text."
+        }
+      ]
+    }
+  }
+]

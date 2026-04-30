@@ -1,0 +1,27 @@
+[
+  {
+    "$modelVersion": "0.0.1",
+    "$entity": "entity.financialRecord",
+    "$id": "example:financialRecord",
+    "$props": {
+      "name": [
+        {
+          "$type": "string",
+          "value": "Jane Example"
+        }
+      ],
+      "amountOwed": [
+        {
+          "$type": "string",
+          "value": "123.45 EUR"
+        }
+      ],
+      "debtSource": [
+        {
+          "$type": "string",
+          "value": "SK_TAX"
+        }
+      ]
+    }
+  }
+]

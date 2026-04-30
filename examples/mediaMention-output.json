@@ -1,0 +1,33 @@
+[
+  {
+    "$modelVersion": "0.0.1",
+    "$entity": "entity.mediaMention",
+    "$id": "example:mediaMention",
+    "$props": {
+      "name": [
+        {
+          "$type": "string",
+          "value": "Jane Example"
+        }
+      ],
+      "title": [
+        {
+          "$type": "string",
+          "value": "Example article"
+        }
+      ],
+      "url": [
+        {
+          "$type": "url",
+          "value": "https://example.com/article"
+        }
+      ],
+      "adverseActivityDetected": [
+        {
+          "$type": "boolean",
+          "value": false
+        }
+      ]
+    }
+  }
+]

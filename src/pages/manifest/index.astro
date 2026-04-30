@@ -1,0 +1,134 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { manifestSchemaUrl, dataModelSchemaUrl } from "../../lib/siteUrl.ts";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const exampleManifest = {
+  "$schema": manifestSchemaUrl,
+  "id": "my-plugin",
+  "version": "0.1.0",
+  "name": "My Plugin",
+  "description": "Short description shown in the OpenRisk plugin browser.",
+  "authors": [{ "name": "Your Name", "email": "you@example.com" }],
+  "license": "MIT",
+  "main": "index.ts",
+  "entrypoints": [
+    {
+      "id": "search-person",
+      "name": "Search Person",
+      "description": "Search for a person by name.",
+      "function": "searchPerson",
+      "inputs": [
+        { "name": "name", "title": "Full name", "type": "string" },
+        { "name": "country", "title": "Country", "type": { "name": "enum", "values": ["SK", "CZ", "PL"] }, "optional": true }
+      ]
+    }
+  ],
+  "settings": [
+    { "name": "apiKey", "title": "API Key", "type": "string", "description": "Your API key." }
+  ],
+  "metrics": [
+    { "name": "remaining_credit", "title": "Remaining Credit", "type": "number" }
+  ]
+};
+---
+
+<BaseLayout title="Plugin Manifest" description="plugin.json structure for OpenRisk plugins.">
+  <main class="mx-auto max-w-4xl px-4 py-12">
+    <div class="mb-8">
+      <a href={base + "/"} class="text-xs text-muted-foreground hover:text-foreground transition-colors">← Back</a>
+      <h1 class="mt-2 text-3xl font-bold tracking-tight">Plugin Manifest</h1>
+      <p class="mt-2 text-muted-foreground">
+        Every OpenRisk plugin ships with a <code class="font-mono text-sm bg-muted px-1 rounded">plugin.json</code> file that describes its identity, entrypoints, settings, and metrics.
+      </p>
+    </div>
+
+    <!-- Example -->
+    <section class="mb-10">
+      <h2 class="mb-3 text-base font-semibold">Complete Example</h2>
+      <pre class="rounded-xl bg-muted p-5 text-sm font-mono overflow-x-auto leading-relaxed">{JSON.stringify(exampleManifest, null, 2)}</pre>
+    </section>
+
+    <!-- Fields reference -->
+    <section class="mb-10">
+      <h2 class="mb-4 text-base font-semibold">Root Fields</h2>
+      <div class="space-y-2">
+        {[
+          { field: "id", type: "string", required: true, desc: "Unique plugin ID. Pattern: ^[a-z][a-z0-9_-]{0,63}$" },
+          { field: "version", type: "string", required: true, desc: "Semantic version string, e.g. 0.1.0." },
+          { field: "name", type: "string", required: true, desc: "Human-readable plugin name." },
+          { field: "description", type: "string", required: true, desc: "Short description shown in the plugin browser." },
+          { field: "authors", type: "array", required: true, desc: "At least one author with name (and optional email, url)." },
+          { field: "license", type: "string", required: true, desc: "SPDX license identifier, e.g. MIT." },
+          { field: "main", type: "string", required: true, desc: "Entry file relative path. Must end in .ts or .js." },
+          { field: "entrypoints", type: "array", required: true, desc: "One or more callable entrypoints." },
+          { field: "settings", type: "array", required: false, desc: "User-configurable settings fields (API keys, toggles, etc)." },
+          { field: "metrics", type: "array", required: false, desc: "Runtime metric declarations (credit, counters, etc)." },
+          { field: "repository", type: "string", required: false, desc: "Source repository URL." },
+          { field: "homepage", type: "string", required: false, desc: "Plugin homepage URL." },
+          { field: "keywords", type: "array", required: false, desc: "Searchable keyword tags." },
+          { field: "icon", type: "string", required: false, desc: "Icon identifier or URL." },
+          { field: "update_metrics_fn", type: "string", required: false, desc: "Function name called to refresh metrics after a run." },
+        ].map(({ field, type, required, desc }) => (
+          <div class="rounded-xl border border-border p-4">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-mono text-sm font-medium">{field}</span>
+              <span class="rounded-md bg-muted px-2 py-0.5 text-xs font-mono">{type}</span>
+              {required && <span class="text-xs text-red-600 dark:text-red-400 font-medium">required</span>}
+            </div>
+            <p class="text-sm text-muted-foreground">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Entrypoint -->
+    <section class="mb-10">
+      <h2 class="mb-4 text-base font-semibold">Entrypoint Fields</h2>
+      <div class="space-y-2">
+        {[
+          { field: "id", type: "string", required: true, desc: "Entrypoint ID. Pattern: ^[a-z][a-z0-9_-]*$" },
+          { field: "name", type: "string", required: true, desc: "Human-readable entrypoint name." },
+          { field: "description", type: "string", required: false, desc: "What this entrypoint does." },
+          { field: "function", type: "string", required: true, desc: "Exported function name in main file." },
+          { field: "inputs", type: "array", required: true, desc: "Input fields (see Field below)." },
+        ].map(({ field, type, required, desc }) => (
+          <div class="rounded-xl border border-border p-4">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-mono text-sm font-medium">{field}</span>
+              <span class="rounded-md bg-muted px-2 py-0.5 text-xs font-mono">{type}</span>
+              {required && <span class="text-xs text-red-600 dark:text-red-400 font-medium">required</span>}
+            </div>
+            <p class="text-sm text-muted-foreground">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Field types -->
+    <section class="mb-10">
+      <h2 class="mb-4 text-base font-semibold">Field Type Values</h2>
+      <p class="mb-3 text-sm text-muted-foreground">The <code class="font-mono bg-muted px-1 rounded">type</code> field in settings, metrics, and entrypoint inputs can be:</p>
+      <div class="flex flex-wrap gap-2">
+        {["string", "number", "boolean", "integer", "date", "url"].map((t) => (
+          <code class="rounded-md border border-border bg-muted px-3 py-1.5 text-sm font-mono">{t}</code>
+        ))}
+        <code class="rounded-md border border-primary/40 bg-primary/5 px-3 py-1.5 text-sm font-mono">{"{ name: \"enum\", values: [...] }"}</code>
+      </div>
+    </section>
+
+    <!-- Schema link -->
+    <div class="rounded-xl border border-border p-5 bg-muted/30">
+      <p class="text-sm font-medium mb-1">JSON Schema</p>
+      <a
+        href={manifestSchemaUrl}
+        class="font-mono text-xs text-primary hover:underline break-all"
+        target="_blank"
+        rel="noopener"
+      >
+        {manifestSchemaUrl}
+      </a>
+    </div>
+  </main>
+</BaseLayout>

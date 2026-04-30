@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+
+export function getStaticPaths() {
+  return Object.entries(dataModelV001.typedValues).map(([id, type]) => ({
+    params: { type: id },
+    props: { id, type },
+  }));
+}
+
+const { id, type } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// Find entities that use this type
+const usedBy = Object.values(dataModelV001.entities).filter((entity) =>
+  Object.values(entity.props).some((prop) => prop.types.includes(id))
+);
+---
+
+<BaseLayout title={type.label} description={type.description}>
+  <main class="mx-auto max-w-3xl px-4 py-12">
+    <div class="mb-6 flex items-center gap-2 text-xs text-muted-foreground">
+      <a href={base + "/"} class="hover:text-foreground transition-colors">SDK</a>
+      <span>/</span>
+      <a href={base + "/types/"} class="hover:text-foreground transition-colors">Types</a>
+      <span>/</span>
+      <span class="text-foreground font-medium">{type.label}</span>
+    </div>
+
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold tracking-tight">{type.label}</h1>
+      <p class="mt-1 font-mono text-sm text-muted-foreground">{id}</p>
+      <p class="mt-4 text-muted-foreground">{type.detail ?? type.description}</p>
+    </div>
+
+    <!-- Wire format -->
+    <section class="mb-8">
+      <h2 class="mb-3 text-base font-semibold">Wire Format</h2>
+      <pre class="rounded-xl bg-muted p-4 text-sm font-mono overflow-x-auto">{JSON.stringify(
+        { $type: id, value: type.examples?.[0] ?? (type.jsonType === "string" ? "..." : type.jsonType === "number" ? 0 : type.jsonType === "boolean" ? true : {}) },
+        null, 2
+      )}</pre>
+    </section>
+
+    <!-- Examples -->
+    {type.examples && type.examples.length > 0 && (
+      <section class="mb-8">
+        <h2 class="mb-3 text-base font-semibold">Examples</h2>
+        <div class="flex flex-wrap gap-2">
+          {type.examples.map((ex) => (
+            <code class="rounded-md border border-border bg-muted px-3 py-1.5 text-sm font-mono">
+              {JSON.stringify(ex)}
+            </code>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Used by -->
+    {usedBy.length > 0 && (
+      <section class="mb-8">
+        <h2 class="mb-3 text-base font-semibold">Used By</h2>
+        <div class="flex flex-wrap gap-2">
+          {usedBy.map((entity) => {
+            const slug = entity.id.replace(/^entity\./, "");
+            return (
+              <a
+                href={base + `/entities/${slug}/`}
+                class="rounded-lg border border-border px-3 py-1.5 text-sm hover:border-primary/50 hover:bg-accent transition-colors"
+              >
+                {entity.label}
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+  </main>
+</BaseLayout>

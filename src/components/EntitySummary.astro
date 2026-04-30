@@ -1,0 +1,26 @@
+---
+const { entity } = Astro.props;
+
+const supportLabels = {
+  primary: "Specialized renderer",
+  properties: "Properties renderer",
+  extra: "$extra only",
+  generic: "Generic renderer",
+  "not-special": "No special UI",
+};
+---
+
+<section class="or-entity-summary">
+  <div class="or-entity-symbol" aria-hidden="true">{entity.icon?.slice(0, 2) ?? "en"}</div>
+  <div>
+    <p class="or-kicker">{entity.group}</p>
+    <h1>{entity.label}</h1>
+    <p class="or-lede">{entity.description}</p>
+    <p>{entity.usage}</p>
+    <div class="or-summary-badges">
+      <span class="or-badge or-badge-strong">{entity.id}</span>
+      <span class={`or-badge or-support-${entity.frontend}`}>{supportLabels[entity.frontend]}</span>
+      <span class="or-badge">{Object.keys(entity.props ?? {}).length} properties</span>
+    </div>
+  </div>
+</section>
