@@ -35,7 +35,6 @@ export interface PropertySpec {
   description: string;
   examples: readonly unknown[];
   builderField?: string;
-  uiRole?: "title" | "subtitle" | "badge" | "summary" | "link" | "property" | "extra";
   frontend?: FrontendSupport;
   notes?: string;
 }

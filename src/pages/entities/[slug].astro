@@ -87,11 +87,6 @@ const frontendLabel: Record<string, string> = {
                         {prop.required && (
                           <span class="text-red-500 text-xs leading-none font-bold" title="required">*</span>
                         )}
-                        {(prop.uiRole === "title" || prop.uiRole === "badge" || prop.uiRole === "link") && (
-                          <span class="rounded-full bg-muted border border-border px-1.5 py-0 text-[10px] text-muted-foreground leading-4">
-                            {prop.uiRole}
-                          </span>
-                        )}
                       </div>
                     </td>
                     <td class="px-3 py-2.5">

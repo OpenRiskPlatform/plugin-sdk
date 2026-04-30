@@ -8,7 +8,6 @@ const commonProps = {
     multiplicity: "many",
     description: "Primary display name for the entity.",
     examples: ["Jane Example"],
-    uiRole: "title",
     frontend: "primary",
   },
   aliases: {
@@ -17,7 +16,6 @@ const commonProps = {
     multiplicity: "many",
     description: "Alternative names, spellings, or aliases exposed by the source.",
     examples: ["J. Example", "Example Jane"],
-    uiRole: "subtitle",
     frontend: "primary",
   },
   notes: {
@@ -26,7 +24,6 @@ const commonProps = {
     multiplicity: "many",
     description: "Short explanatory note shown near the entity body.",
     examples: ["Matched by full name and date of birth."],
-    uiRole: "summary",
     frontend: "primary",
   },
 } as const;
@@ -139,7 +136,6 @@ export const dataModelV001 = defineDataModel({
           multiplicity: "many",
           description: "Birth date as provided by the source.",
           examples: ["1980-05-14", "1980"],
-          uiRole: "property",
           frontend: "primary",
         },
         birthPlace: {
@@ -148,7 +144,6 @@ export const dataModelV001 = defineDataModel({
           multiplicity: "many",
           description: "Birth location text.",
           examples: ["Bratislava"],
-          uiRole: "property",
           frontend: "primary",
         },
         nationalities: {
@@ -157,7 +152,6 @@ export const dataModelV001 = defineDataModel({
           multiplicity: "many",
           description: "Nationality or citizenship labels.",
           examples: ["Slovakia"],
-          uiRole: "property",
           frontend: "primary",
         },
         addresses: {
@@ -166,7 +160,6 @@ export const dataModelV001 = defineDataModel({
           multiplicity: "many",
           description: "Known or source-provided addresses.",
           examples: ["Main Street 1, Bratislava"],
-          uiRole: "property",
           frontend: "primary",
         },
         emails: {
@@ -175,7 +168,6 @@ export const dataModelV001 = defineDataModel({
           multiplicity: "many",
           description: "Email addresses associated with the person.",
           examples: ["jane@example.com"],
-          uiRole: "property",
           frontend: "primary",
         },
         phones: {
@@ -184,7 +176,6 @@ export const dataModelV001 = defineDataModel({
           multiplicity: "many",
           description: "Phone numbers associated with the person.",
           examples: ["+421 900 000 000"],
-          uiRole: "property",
           frontend: "primary",
         },
         pepStatus: {
@@ -194,7 +185,6 @@ export const dataModelV001 = defineDataModel({
           description: "True when PEP exposure is confirmed; false when explicitly clear.",
           examples: [true],
           builderField: "isPep",
-          uiRole: "badge",
           frontend: "primary",
         },
         sanctioned: {
@@ -204,7 +194,6 @@ export const dataModelV001 = defineDataModel({
           description: "True when sanctions exposure is confirmed; false when explicitly clear.",
           examples: [false],
           builderField: "isSanctioned",
-          uiRole: "badge",
           frontend: "primary",
         },
       },
@@ -321,7 +310,6 @@ export const dataModelV001 = defineDataModel({
           description: "True when PEP exposure is associated with the organization.",
           examples: [false],
           builderField: "isPep",
-          uiRole: "badge",
           frontend: "primary",
         },
         sanctioned: {
@@ -331,7 +319,6 @@ export const dataModelV001 = defineDataModel({
           description: "True when sanctions exposure is associated with the organization.",
           examples: [true],
           builderField: "isSanctioned",
-          uiRole: "badge",
           frontend: "primary",
         },
       },
@@ -401,7 +388,6 @@ export const dataModelV001 = defineDataModel({
           description: "Atomic fact claim stored in $extra with key Claim.",
           examples: ["The article mentions Jane Example."],
           builderField: "claims",
-          uiRole: "extra",
           frontend: "extra",
           notes: "In v0.0.1 the OpenRisk media mention card reads claims from $extra, not $props.",
         },
