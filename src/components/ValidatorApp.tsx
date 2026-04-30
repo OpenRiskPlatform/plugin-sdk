@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 const PLACEHOLDER = JSON.stringify(
     [
         {
+            $modelVersion: "0.0.1",
             $entity: "entity.person",
             $id: "example:person",
             $props: {

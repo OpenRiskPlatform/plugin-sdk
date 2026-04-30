@@ -3,6 +3,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { manifestSchemaUrl, dataModelSchemaUrl } from "../../lib/siteUrl.ts";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// Local URL — works in both dev server and production
+const manifestSchemaLocalUrl = new URL(`${base}/schemas/plugin-manifest-v0.0.1.schema.json`, Astro.url).href;
 
 const exampleManifest = {
   "$schema": manifestSchemaUrl,
@@ -120,14 +122,15 @@ const exampleManifest = {
 
     <!-- Schema link -->
     <div class="rounded-xl border border-border p-5 bg-muted/30">
-      <p class="text-sm font-medium mb-1">JSON Schema</p>
+      <p class="text-sm font-medium mb-2">JSON Schema</p>
+      <p class="text-xs text-muted-foreground mb-2">Use this canonical URL as <code class="font-mono bg-muted px-1 rounded">$schema</code> in your <code class="font-mono bg-muted px-1 rounded">plugin.json</code>:</p>
+      <code class="block font-mono text-xs text-primary break-all mb-3">{manifestSchemaUrl}</code>
       <a
-        href={manifestSchemaUrl}
-        class="font-mono text-xs text-primary hover:underline break-all"
-        target="_blank"
-        rel="noopener"
+        href={manifestSchemaLocalUrl}
+        download="plugin-manifest-v0.0.1.schema.json"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-accent transition-colors"
       >
-        {manifestSchemaUrl}
+        ↓ Download schema
       </a>
     </div>
   </main>

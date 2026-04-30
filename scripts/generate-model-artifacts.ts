@@ -347,6 +347,12 @@ async function main() {
     );
   }
 
+  // Static manifest schema — copy from schemas/ to public/schemas/
+  await copyFile(
+    path("schemas/plugin-manifest-v0.0.1.schema.json"),
+    path("public/schemas/plugin-manifest-v0.0.1.schema.json"),
+  );
+
   // TypeScript model source files — plugins reference these directly
   const modelDir = new URL("model/", root);
   for (const file of await readdir(modelDir)) {
@@ -356,6 +362,7 @@ async function main() {
   }
 
   console.log(`Generated schema: public/schemas/data-model-v${dataModelV001.version}.schema.json`);
+  console.log(`Copied manifest schema: public/schemas/plugin-manifest-v0.0.1.schema.json`);
   console.log(`Generated ${Object.keys(dataModelV001.entities).length} example files in public/examples/`);
   console.log(`Copied model TS files to public/model/`);
 }
