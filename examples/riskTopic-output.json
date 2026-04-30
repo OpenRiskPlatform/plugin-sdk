@@ -1,0 +1,27 @@
+[
+  {
+    "$modelVersion": "0.0.1",
+    "$entity": "entity.riskTopic",
+    "$id": "example:riskTopic",
+    "$props": {
+      "name": [
+        {
+          "$type": "string",
+          "value": "Jane Example"
+        }
+      ],
+      "topicId": [
+        {
+          "$type": "string",
+          "value": "corruption"
+        }
+      ],
+      "adverseActivityDetected": [
+        {
+          "$type": "boolean",
+          "value": false
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "$modelVersion": "0.0.1",
+    "$entity": "entity.person",
+    "$id": "example:person",
+    "$props": {
+      "name": [
+        {
+          "$type": "string",
+          "value": "Jane Example"
+        }
+      ],
+      "aliases": [
+        {
+          "$type": "string",
+          "value": "J. Example"
+        }
+      ],
+      "pepStatus": [
+        {
+          "$type": "boolean",
+          "value": false
+        }
+      ],
+      "sanctioned": [
+        {
+          "$type": "boolean",
+          "value": false
+        }
+      ]
+    }
+  }
+]

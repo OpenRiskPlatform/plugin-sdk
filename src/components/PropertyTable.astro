@@ -1,0 +1,84 @@
+---
+import TypeChip from "./TypeChip.astro";
+
+const { entity, typedValues } = Astro.props;
+const props = Object.entries(entity.props ?? {});
+
+function supportLabel(value) {
+  const labels = {
+    primary: "Primary UI",
+    properties: "Properties",
+    extra: "$extra",
+    generic: "Generic",
+    "not-special": "No special UI",
+  };
+  return labels[value] ?? value;
+}
+---
+
+<section class="or-property-table" aria-labelledby="properties-heading">
+  <div class="or-section-heading">
+    <p class="or-kicker">Entity properties</p>
+    <h2 id="properties-heading">How {entity.label} renders</h2>
+  </div>
+
+  <div class="or-prop-grid">
+    {props.map(([name, prop]) => (
+      <details class="or-prop-card">
+        <summary>
+          <span class="or-prop-main">
+            <span class="or-prop-name">{name}</span>
+            <span class="or-prop-label">{prop.label}</span>
+          </span>
+          <span class="or-prop-meta">
+            {prop.required && <span class="or-badge or-badge-strong">Required</span>}
+            <span class={`or-badge or-support-${prop.frontend ?? "properties"}`}>
+              {supportLabel(prop.frontend ?? "properties")}
+            </span>
+          </span>
+        </summary>
+
+        <div class="or-prop-body">
+          <p>{prop.description}</p>
+
+          <div class="or-type-row">
+            <span>Types</span>
+            <div>
+              {(prop.types ?? []).map((type) => (
+                <TypeChip type={type} spec={typedValues[type]} href={`../types/${type}/`} />
+              ))}
+            </div>
+          </div>
+
+          <dl class="or-prop-facts">
+            <div>
+              <dt>Multiplicity</dt>
+              <dd>{prop.multiplicity === "one" ? "Single value" : "Array values"}</dd>
+            </div>
+            {prop.builderField && (
+              <div>
+                <dt>Builder field</dt>
+                <dd><code>{prop.builderField}</code></dd>
+              </div>
+            )}
+            {prop.uiRole && (
+              <div>
+                <dt>UI role</dt>
+                <dd>{prop.uiRole}</dd>
+              </div>
+            )}
+          </dl>
+
+          {prop.examples?.length > 0 && (
+            <div class="or-example-inline">
+              <span>Example</span>
+              <code>{JSON.stringify(prop.examples[0])}</code>
+            </div>
+          )}
+
+          {prop.notes && <p class="or-note">{prop.notes}</p>}
+        </div>
+      </details>
+    ))}
+  </div>
+</section>
