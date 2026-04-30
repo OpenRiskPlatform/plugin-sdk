@@ -1,0 +1,71 @@
+---
+import "../styles/globals.css";
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "OpenRisk Plugin SDK", description = "Developer reference for OpenRisk plugin data model authors." } = Astro.props;
+const base = import.meta.env.BASE_URL ?? "/plugin-sdk";
+const nav = [
+  { href: base + "/", label: "Overview" },
+  { href: base + "/entities/", label: "Entities" },
+  { href: base + "/types/", label: "Types" },
+  { href: base + "/manifest/", label: "Manifest" },
+  { href: base + "/validate/", label: "Validator" },
+];
+const current = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · OpenRisk Plugin SDK</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={base + "/favicon.svg"} />
+  </head>
+  <body>
+    <!-- Top nav -->
+    <header class="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
+      <div class="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4">
+        <a href={base + "/"} class="flex items-center gap-2 font-semibold text-sm">
+          <span class="text-base">⬡</span>
+          <span>OpenRisk SDK</span>
+        </a>
+        <nav class="flex items-center gap-1 text-sm">
+          {nav.map((item) => {
+            const isActive = current === item.href || (item.href !== base + "/" && current.startsWith(item.href));
+            return (
+              <a
+                href={item.href}
+                class={[
+                  "px-3 py-1.5 rounded-md transition-colors",
+                  isActive
+                    ? "bg-accent text-accent-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
+                ].join(" ")}
+              >
+                {item.label}
+              </a>
+            );
+          })}
+        </nav>
+        <div class="ml-auto">
+          <a
+            href="https://github.com/OpenRiskPlatform/plugin-sdk"
+            target="_blank"
+            rel="noreferrer"
+            class="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            GitHub ↗
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <slot />
+  </body>
+</html>

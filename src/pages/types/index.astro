@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+
+const base = import.meta.env.BASE_URL ?? "/plugin-sdk";
+const types = Object.entries(dataModelV001.typedValues);
+---
+
+<BaseLayout title="Typed Values" description="All typed value primitives in the OpenRisk data model.">
+  <main class="mx-auto max-w-4xl px-4 py-12">
+    <div class="mb-8">
+      <a href={base + "/"} class="text-xs text-muted-foreground hover:text-foreground transition-colors">← Back</a>
+      <h1 class="mt-2 text-3xl font-bold tracking-tight">Typed Values</h1>
+      <p class="mt-2 text-muted-foreground">
+        {types.length} primitive value types. Each property value is wrapped as <code class="font-mono text-sm bg-muted px-1 rounded">{"{ $type, value }"}</code>.
+      </p>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2">
+      {types.map(([id, type]) => (
+        <a
+          href={base + `/types/${id}/`}
+          class="flex flex-col gap-1.5 rounded-xl border border-border p-5 hover:border-primary/50 hover:bg-accent/30 transition-all"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-semibold text-sm">{type.label}</span>
+            <code class="rounded-md bg-muted px-2 py-0.5 text-xs font-mono">{id}</code>
+          </div>
+          <p class="text-sm text-muted-foreground">{type.description}</p>
+          <span class="text-xs text-muted-foreground font-mono">JSON: {type.jsonType}</span>
+        </a>
+      ))}
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+
+const base = import.meta.env.BASE_URL ?? "/plugin-sdk";
+const entities = Object.values(dataModelV001.entities);
+const groups = [...new Set(entities.map((e) => e.group))];
+---
+
+<BaseLayout title="OpenRisk Plugin SDK" description="Developer reference for OpenRisk plugin data model and plugin manifest.">
+  <main class="mx-auto max-w-4xl px-4 py-16">
+    <!-- Hero -->
+    <div class="mb-16 text-center">
+      <div class="mb-4 inline-block rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+        Data Model v{dataModelV001.version}
+      </div>
+      <h1 class="text-4xl font-bold tracking-tight">OpenRisk Plugin SDK</h1>
+      <p class="mt-4 max-w-xl mx-auto text-muted-foreground text-lg leading-relaxed">
+        {dataModelV001.description}
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3 justify-center">
+        <a
+          href={base + "/entities/"}
+          class="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors"
+        >
+          Browse Entities →
+        </a>
+        <a
+          href={base + "/validate/"}
+          class="rounded-lg border border-border bg-background px-5 py-2.5 text-sm font-medium hover:bg-accent transition-colors"
+        >
+          Validate JSON
+        </a>
+        <a
+          href={base + "/manifest/"}
+          class="rounded-lg border border-border bg-background px-5 py-2.5 text-sm font-medium hover:bg-accent transition-colors"
+        >
+          Plugin Manifest
+        </a>
+      </div>
+    </div>
+
+    <!-- Entity Groups -->
+    {groups.map((group) => {
+      const groupEntities = entities.filter((e) => e.group === group);
+      return (
+        <section class="mb-12">
+          <h2 class="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground">{group}</h2>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {groupEntities.map((entity) => {
+              const slug = entity.id.replace(/^entity\./, "");
+              const propCount = Object.keys(entity.props).length;
+              return (
+                <a
+                  href={base + `/entities/${slug}/`}
+                  class="group flex flex-col gap-1.5 rounded-xl border border-border p-5 hover:border-primary/50 hover:bg-accent/30 transition-all"
+                >
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="font-semibold text-sm">{entity.label}</span>
+                    <span class="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground font-mono">
+                      {entity.id}
+                    </span>
+                  </div>
+                  <p class="text-sm text-muted-foreground leading-snug">{entity.description}</p>
+                  <span class="text-xs text-muted-foreground">{propCount} props</span>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      );
+    })}
+
+    <!-- Quick links -->
+    <div class="mt-16 grid gap-4 sm:grid-cols-3 border-t border-border pt-12">
+      <a href={base + "/types/"} class="rounded-xl border border-border p-5 hover:bg-accent/30 transition-colors">
+        <p class="font-semibold text-sm mb-1">Typed Values</p>
+        <p class="text-sm text-muted-foreground">{Object.keys(dataModelV001.typedValues).length} value types with JSON wire format</p>
+      </a>
+      <a href={base + "/manifest/"} class="rounded-xl border border-border p-5 hover:bg-accent/30 transition-colors">
+        <p class="font-semibold text-sm mb-1">Plugin Manifest</p>
+        <p class="text-sm text-muted-foreground">plugin.json structure, entrypoints, settings, metrics</p>
+      </a>
+      <a href={base + "/validate/"} class="rounded-xl border border-border p-5 hover:bg-accent/30 transition-colors">
+        <p class="font-semibold text-sm mb-1">JSON Validator</p>
+        <p class="text-sm text-muted-foreground">Validate plugin output against the data model schema</p>
+      </a>
+    </div>
+  </main>
+</BaseLayout>

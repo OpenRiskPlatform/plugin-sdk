@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { ValidatorApp } from "../../components/ValidatorApp.tsx";
+
+const base = import.meta.env.BASE_URL ?? "/plugin-sdk";
+---
+
+<BaseLayout title="JSON Validator" description="Validate plugin output against the OpenRisk data model schema.">
+  <main class="mx-auto max-w-3xl px-4 py-12">
+    <div class="mb-8">
+      <a href={base + "/"} class="text-xs text-muted-foreground hover:text-foreground transition-colors">← Back</a>
+      <h1 class="mt-2 text-3xl font-bold tracking-tight">JSON Validator</h1>
+      <p class="mt-2 text-muted-foreground">
+        Paste your plugin output (an array of entity objects) and validate it against the
+        <a href="https://openriskplatform.github.io/plugin-sdk/schemas/data-model-v0.0.1.schema.json"
+           class="text-primary hover:underline" target="_blank" rel="noopener">data model v0.0.1 schema</a>.
+      </p>
+    </div>
+    <ValidatorApp client:load />
+  </main>
+</BaseLayout>

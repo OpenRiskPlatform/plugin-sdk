@@ -1,0 +1,146 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+import { buildAllExamples } from "../../lib/buildExample.ts";
+import { EntityPreview } from "../../components/EntityPreview.tsx";
+
+export function getStaticPaths() {
+  return Object.values(dataModelV001.entities).map((entity) => ({
+    params: { slug: entity.id.replace(/^entity\./, "") },
+    props: { entity },
+  }));
+}
+
+const { entity } = Astro.props;
+const base = import.meta.env.BASE_URL ?? "/plugin-sdk";
+const examples = buildAllExamples(entity);
+
+// Group props by frontend tier
+const primaryProps = Object.entries(entity.props).filter(([, p]) => p.frontend === "primary" || !p.frontend);
+const extraProps = Object.entries(entity.props).filter(([, p]) => p.frontend === "extra");
+
+const frontendLabel: Record<string, string> = {
+  primary: "Rendered in card",
+  extra: "Shown in extra section",
+  generic: "Generic fallback",
+  properties: "Shown in properties",
+};
+---
+
+<BaseLayout title={entity.label} description={entity.description}>
+  <main class="mx-auto max-w-5xl px-4 py-12">
+    <!-- Breadcrumb -->
+    <div class="mb-6 flex items-center gap-2 text-xs text-muted-foreground">
+      <a href={base + "/"} class="hover:text-foreground transition-colors">SDK</a>
+      <span>/</span>
+      <a href={base + "/entities/"} class="hover:text-foreground transition-colors">Entities</a>
+      <span>/</span>
+      <span class="text-foreground font-medium">{entity.label}</span>
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-[1fr_420px]">
+      <!-- Left: Entity info -->
+      <div>
+        <!-- Header -->
+        <div class="mb-8">
+          <div class="flex items-start gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">{entity.group}</span>
+                <span class={[
+                  "rounded-full px-2 py-0.5 text-xs font-medium",
+                  entity.frontend === "primary" ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300" : "bg-muted text-muted-foreground"
+                ].join(" ")}>
+                  {entity.frontend}
+                </span>
+              </div>
+              <h1 class="text-3xl font-bold tracking-tight">{entity.label}</h1>
+              <p class="mt-1 font-mono text-sm text-muted-foreground">{entity.id}</p>
+            </div>
+          </div>
+          <p class="mt-4 text-muted-foreground leading-relaxed">{entity.description}</p>
+          {entity.usage && (
+            <div class="mt-4 rounded-lg border-l-4 border-primary/40 bg-muted/40 px-4 py-3">
+              <p class="text-sm text-muted-foreground leading-relaxed">{entity.usage}</p>
+            </div>
+          )}
+        </div>
+
+        <!-- Props table -->
+        <section class="mb-8">
+          <h2 class="mb-4 text-base font-semibold">Properties</h2>
+          <div class="space-y-2">
+            {primaryProps.map(([key, prop]) => (
+              <div class="rounded-xl border border-border p-4">
+                <div class="flex items-start justify-between gap-2 flex-wrap">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-sm font-medium">{key}</span>
+                    {prop.required && (
+                      <span class="text-xs text-red-600 dark:text-red-400 font-medium">required</span>
+                    )}
+                    {prop.uiRole === "badge" && (
+                      <span class="rounded-full bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300 px-2 py-0.5 text-xs">badge</span>
+                    )}
+                  </div>
+                  <div class="flex flex-wrap gap-1.5">
+                    {prop.types.map((t) => (
+                      <a
+                        href={base + `/types/${t}/`}
+                        class="rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-mono hover:border-primary/50 hover:bg-accent transition-colors"
+                      >
+                        {t}
+                      </a>
+                    ))}
+                    <span class="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                      {prop.multiplicity ?? "one"}
+                    </span>
+                  </div>
+                </div>
+                <p class="mt-2 text-sm text-muted-foreground">{prop.description}</p>
+                {prop.examples && (
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    {prop.examples.map((ex) => (
+                      <code class="rounded bg-muted px-2 py-0.5 text-xs font-mono">
+                        {JSON.stringify(ex)}
+                      </code>
+                    ))}
+                  </div>
+                )}
+                {prop.notes && (
+                  <p class="mt-2 text-xs text-muted-foreground italic">{prop.notes}</p>
+                )}
+              </div>
+            ))}
+            {extraProps.map(([key, prop]) => (
+              <div class="rounded-xl border border-dashed border-border p-4 opacity-80">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-sm">{key}</span>
+                    <span class="rounded-full bg-muted text-muted-foreground px-2 py-0.5 text-xs">$extra</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5">
+                    {prop.types.map((t) => (
+                      <span class="rounded-md border border-dashed border-border bg-muted px-2 py-0.5 text-xs font-mono text-muted-foreground">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <p class="mt-2 text-sm text-muted-foreground">{prop.description}</p>
+                {prop.notes && (
+                  <p class="mt-2 text-xs text-muted-foreground italic">{prop.notes}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <!-- Right: Live Preview -->
+      <div class="lg:sticky lg:top-20 lg:self-start">
+        <h2 class="mb-3 text-base font-semibold">Preview</h2>
+        <EntityPreview client:load examples={examples} />
+      </div>
+    </div>
+  </main>
+</BaseLayout>
