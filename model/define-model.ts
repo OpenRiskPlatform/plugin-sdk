@@ -29,11 +29,11 @@ export interface TypedValueSpec {
 
 export interface PropertySpec {
   label: string;
-  types: TypedValueKind[];
+  types: readonly TypedValueKind[];
   required?: boolean;
   multiplicity?: "one" | "many";
   description: string;
-  examples: unknown[];
+  examples: readonly unknown[];
   builderField?: string;
   uiRole?: "title" | "subtitle" | "badge" | "summary" | "link" | "property" | "extra";
   frontend?: FrontendSupport;
