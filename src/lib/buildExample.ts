@@ -48,7 +48,7 @@ export function buildExampleEntity(
     $props: props,
   };
 
-  if (extra.length) (output as Record<string, unknown>).$extra = extra;
+  if (extra.length) (output as unknown as Record<string, unknown>).$extra = extra;
   return [output];
 }
 
