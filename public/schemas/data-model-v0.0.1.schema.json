@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openriskplatform.github.io/plugin-sdk/schemas/data-model-v0.0.1.schema.json",
+  "title": "OpenRisk Data Model 0.0.1 Result",
+  "description": "Frontend-compatible v1 entity array contract for single-file OpenRisk TypeScript plugins.",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/DataModelEntity"
+  },
+  "definitions": {
+    "DataModelEntity": {
+      "type": "object",
+      "required": [
+        "$modelVersion",
+        "$entity",
+        "$id"
+      ],
+      "properties": {
+        "$modelVersion": {
+          "const": "0.0.1"
+        },
+        "$entity": {
+          "enum": [
+            "entity.person",
+            "entity.organization",
+            "entity.mediaMention",
+            "entity.riskTopic",
+            "entity.socialProfile",
+            "entity.financialRecord",
+            "entity.detectedEntity"
+          ]
+        },
+        "$id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "$sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SourceDescriptor"
+          }
+        },
+        "$props": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/TypedValue"
+            }
+          }
+        },
+        "$extra": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyValue"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "SourceDescriptor": {
+      "type": "object",
+      "required": [
+        "name",
+        "source"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "TypedValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "$type",
+            "value"
+          ],
+          "properties": {
+            "$type": {
+              "enum": [
+                "string",
+                "number",
+                "boolean",
+                "date-iso8601",
+                "date-partial-iso8601",
+                "date-time-iso8601",
+                "url",
+                "address",
+                "location-iso6709",
+                "image-url",
+                "image-base64"
+              ]
+            },
+            "value": {}
+          },
+          "additionalProperties": false
+        },
+        {
+          "$ref": "#/definitions/KeyValue"
+        }
+      ]
+    },
+    "KeyValue": {
+      "type": "object",
+      "required": [
+        "$type",
+        "value"
+      ],
+      "properties": {
+        "$type": {
+          "const": "key-value"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "key",
+            "value"
+          ],
+          "properties": {
+            "key": {
+              "type": "object",
+              "required": [
+                "$type",
+                "value"
+              ],
+              "properties": {
+                "$type": {
+                  "const": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "value": {
+              "$ref": "#/definitions/TypedValue"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

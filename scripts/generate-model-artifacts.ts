@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile, copyFile, readdir } from "node:fs/promises";
 import { dataModelV001 } from "../model/data-model-v0.0.1.ts";
 import type { EntitySpec, PropertySpec, TypedValueKind } from "../model/define-model.ts";
 import { SITE_BASE } from "../site.config.ts";
@@ -330,21 +330,34 @@ export async function search(inputs: { target: string }): Promise<DataModelEntit
 }
 
 async function main() {
-  await mkdir(path("schemas"), { recursive: true });
-  await mkdir(path("examples"), { recursive: true });
+  // public/ subdirs — Astro copies everything in public/ verbatim to dist/
+  await mkdir(path("public/schemas"), { recursive: true });
+  await mkdir(path("public/examples"), { recursive: true });
+  await mkdir(path("public/model"), { recursive: true });
 
+  // JSON schema
   const schema = schemaForModel();
-  await writeFile(path(`schemas/data-model-v${dataModelV001.version}.schema.json`), stableJson(schema));
+  await writeFile(path(`public/schemas/data-model-v${dataModelV001.version}.schema.json`), stableJson(schema));
 
+  // Example output files
   for (const entity of Object.values(dataModelV001.entities)) {
     await writeFile(
-      path(`examples/${slugEntity(entity.id)}-output.json`),
+      path(`public/examples/${slugEntity(entity.id)}-output.json`),
       stableJson(entityExample(entity, "common")),
     );
   }
 
-  console.log(`Generated schema: schemas/data-model-v${dataModelV001.version}.schema.json`);
-  console.log(`Generated ${Object.keys(dataModelV001.entities).length} example files in examples/`);
+  // TypeScript model source files — plugins reference these directly
+  const modelDir = new URL("model/", root);
+  for (const file of await readdir(modelDir)) {
+    if (file.endsWith(".ts")) {
+      await copyFile(new URL(file, modelDir), path(`public/model/${file}`));
+    }
+  }
+
+  console.log(`Generated schema: public/schemas/data-model-v${dataModelV001.version}.schema.json`);
+  console.log(`Generated ${Object.keys(dataModelV001.entities).length} example files in public/examples/`);
+  console.log(`Copied model TS files to public/model/`);
 }
 
 await main();

@@ -1,0 +1,33 @@
+[
+  {
+    "$modelVersion": "0.0.1",
+    "$entity": "entity.organization",
+    "$id": "example:organization",
+    "$props": {
+      "name": [
+        {
+          "$type": "string",
+          "value": "Example Ltd"
+        }
+      ],
+      "registrationId": [
+        {
+          "$type": "string",
+          "value": "12345678"
+        }
+      ],
+      "country": [
+        {
+          "$type": "string",
+          "value": "SK"
+        }
+      ],
+      "status": [
+        {
+          "$type": "string",
+          "value": "active"
+        }
+      ]
+    }
+  }
+]

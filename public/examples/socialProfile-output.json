@@ -1,0 +1,27 @@
+[
+  {
+    "$modelVersion": "0.0.1",
+    "$entity": "entity.socialProfile",
+    "$id": "example:socialProfile",
+    "$props": {
+      "name": [
+        {
+          "$type": "string",
+          "value": "Jane Example"
+        }
+      ],
+      "platform": [
+        {
+          "$type": "string",
+          "value": "LinkedIn"
+        }
+      ],
+      "profileUrl": [
+        {
+          "$type": "url",
+          "value": "https://linkedin.com/in/jane-example"
+        }
+      ]
+    }
+  }
+]
