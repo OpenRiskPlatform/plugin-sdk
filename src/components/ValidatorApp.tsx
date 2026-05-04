@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 const PLACEHOLDER = JSON.stringify(
     [
         {
-            $modelVersion: "0.0.1",
+            $modelVersion: "0.0.2",
             $entity: "entity.person",
             $id: "example:person",
             $props: {
@@ -106,7 +106,7 @@ export function ValidatorApp({ schemaUrl }: { schemaUrl: string }) {
             {result.status === "valid" && (
                 <div className="rounded-xl border border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/30 p-4">
                     <p className="text-sm text-green-700 dark:text-green-400">
-                        Output is valid against the OpenRisk data model v0.0.1 schema.
+                        Output is valid against the OpenRisk data model v0.0.2 schema.
                     </p>
                 </div>
             )}

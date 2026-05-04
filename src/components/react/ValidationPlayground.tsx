@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 const initialValue = JSON.stringify(
   [
     {
-      $modelVersion: "0.0.1",
+      $modelVersion: "0.0.2",
       $entity: "entity.person",
       $id: "example:jane",
       $props: {
@@ -26,7 +26,7 @@ export function ValidationPlayground({ schema }: { schema: object }) {
     const parsed = JSON.parse(input);
     const ok = validate(parsed);
     state = ok
-      ? { ok: true, message: "Valid data-model 0.0.1 output." }
+      ? { ok: true, message: "Valid data-model 0.0.2 output." }
       : {
           ok: false,
           message: "Schema validation failed.",

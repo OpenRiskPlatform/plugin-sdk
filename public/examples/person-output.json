@@ -1,6 +1,6 @@
 [
   {
-    "$modelVersion": "0.0.1",
+    "$modelVersion": "0.0.2",
     "$entity": "entity.person",
     "$id": "example:person",
     "$props": {

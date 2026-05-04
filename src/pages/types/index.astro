@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+import { dataModelV002 } from "@model/data-model-v0.0.2.ts";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const types = Object.entries(dataModelV001.typedValues);
+const types = Object.entries(dataModelV002.typedValues);
 ---
 
 <BaseLayout title="Typed Values" description="All typed value primitives in the OpenRisk data model.">

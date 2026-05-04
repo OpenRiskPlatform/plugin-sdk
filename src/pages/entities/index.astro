@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+import { dataModelV002 } from "@model/data-model-v0.0.2.ts";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const entities = Object.values(dataModelV001.entities);
+const entities = Object.values(dataModelV002.entities);
 ---
 
 <BaseLayout title="Entities" description="All entity types in the OpenRisk data model.">
@@ -12,7 +12,7 @@ const entities = Object.values(dataModelV001.entities);
       <a href={base + "/"} class="text-xs text-muted-foreground hover:text-foreground transition-colors">← Back</a>
       <h1 class="mt-2 text-3xl font-bold tracking-tight">Entities</h1>
       <p class="mt-2 text-muted-foreground">
-        {entities.length} entity types in data model v{dataModelV001.version}
+        {entities.length} entity types in data model v{dataModelV002.version}
       </p>
     </div>
     <div class="grid gap-3 sm:grid-cols-2">

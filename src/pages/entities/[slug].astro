@@ -1,11 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+import { dataModelV002 } from "@model/data-model-v0.0.2.ts";
 import { buildAllExamples } from "../../lib/buildExample.ts";
 import { EntityPreview } from "../../components/EntityPreview.tsx";
 
 export function getStaticPaths() {
-  return Object.values(dataModelV001.entities).map((entity) => ({
+  return Object.values(dataModelV002.entities).map((entity) => ({
     params: { slug: entity.id.replace(/^entity\./, "") },
     props: { entity },
   }));

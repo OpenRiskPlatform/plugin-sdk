@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { readdirSync } from "node:fs";
 import Ajv from "ajv";
 
-const schema = JSON.parse(await readFile(new URL("../schemas/data-model-v0.0.1.schema.json", import.meta.url), "utf8"));
+const schema = JSON.parse(await readFile(new URL("../schemas/data-model-v0.0.2.schema.json", import.meta.url), "utf8"));
 const ajv = new Ajv({ allErrors: true, strict: false });
 const validate = ajv.compile(schema);
 const examplesDir = new URL("../examples/", import.meta.url);

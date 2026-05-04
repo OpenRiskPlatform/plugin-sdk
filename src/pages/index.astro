@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+import { dataModelV002 } from "@model/data-model-v0.0.2.ts";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const entities = Object.values(dataModelV001.entities);
+const entities = Object.values(dataModelV002.entities);
 const groups = [...new Set(entities.map((e) => e.group))];
 ---
 
@@ -12,11 +12,11 @@ const groups = [...new Set(entities.map((e) => e.group))];
     <!-- Hero -->
     <div class="mb-16 text-center">
       <div class="mb-4 inline-block rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-        Data Model v{dataModelV001.version}
+        Data Model v{dataModelV002.version}
       </div>
       <h1 class="text-4xl font-bold tracking-tight">OpenRisk Plugin SDK</h1>
       <p class="mt-4 max-w-xl mx-auto text-muted-foreground text-lg leading-relaxed">
-        {dataModelV001.description}
+        {dataModelV002.description}
       </p>
       <div class="mt-8 flex flex-wrap gap-3 justify-center">
         <a
@@ -75,7 +75,7 @@ const groups = [...new Set(entities.map((e) => e.group))];
     <div class="mt-16 grid gap-4 sm:grid-cols-3 border-t border-border pt-12">
       <a href={base + "/types/"} class="rounded-xl border border-border p-5 hover:bg-accent/30 transition-colors">
         <p class="font-semibold text-sm mb-1">Typed Values</p>
-        <p class="text-sm text-muted-foreground">{Object.keys(dataModelV001.typedValues).length} value types with JSON wire format</p>
+        <p class="text-sm text-muted-foreground">{Object.keys(dataModelV002.typedValues).length} value types with JSON wire format</p>
       </a>
       <a href={base + "/manifest/"} class="rounded-xl border border-border p-5 hover:bg-accent/30 transition-colors">
         <p class="font-semibold text-sm mb-1">Plugin Manifest</p>

@@ -1,9 +1,11 @@
 import { mkdir, writeFile, copyFile, readdir } from "node:fs/promises";
-import { dataModelV001 } from "../model/data-model-v0.0.1.ts";
-import type { EntitySpec, PropertySpec, TypedValueKind } from "../model/define-model.ts";
+import { dataModelV002 } from "../model/data-model-v0.0.2.ts";
+import type { EntitySpec, PropertySpec, TypedValueKind, TypedValueSpec } from "../model/define-model.ts";
 import { SITE_BASE } from "../site.config.ts";
 
 const root = new URL("../", import.meta.url);
+
+const currentModel = dataModelV002;
 
 function path(name: string) {
   return new URL(name, root);
@@ -54,7 +56,7 @@ function entityExample(entity: EntitySpec, variant: "minimal" | "common" | "full
   }
 
   const output: Record<string, unknown> = {
-    $modelVersion: dataModelV001.version,
+    $modelVersion: currentModel.version,
     $entity: entity.id,
     $id: `example:${slugEntity(entity.id)}`,
     $props: props,
@@ -64,14 +66,42 @@ function entityExample(entity: EntitySpec, variant: "minimal" | "common" | "full
   return [output];
 }
 
+function valueSchemaFor(type: TypedValueSpec) {
+  const base =
+    type.jsonType === "object"
+      ? { type: "object" as const }
+      : { type: type.jsonType };
+
+  if (type.allowedValues && type.allowedValues.length > 0) {
+    return {
+      ...base,
+      enum: [...type.allowedValues],
+    };
+  }
+
+  return base;
+}
+
 function schemaForModel() {
-  const typedValueKinds = Object.keys(dataModelV001.typedValues).filter((kind) => kind !== "key-value");
+  const typedValueKinds = Object.keys(currentModel.typedValues).filter((kind) => kind !== "key-value");
+  const typedValueDefs = typedValueKinds.map((kind) => {
+    const type = currentModel.typedValues[kind as TypedValueKind];
+    return {
+      type: "object",
+      required: ["$type", "value"],
+      properties: {
+        $type: { const: kind },
+        value: valueSchemaFor(type),
+      },
+      additionalProperties: false,
+    };
+  });
 
   return {
     $schema: "http://json-schema.org/draft-07/schema#",
-    $id: `${SITE_BASE}/schemas/data-model-v${dataModelV001.version}.schema.json`,
-    title: `OpenRisk Data Model ${dataModelV001.version} Result`,
-    description: dataModelV001.description,
+    $id: `${SITE_BASE}/schemas/data-model-v${currentModel.version}.schema.json`,
+    title: `OpenRisk Data Model ${currentModel.version} Result`,
+    description: currentModel.description,
     type: "array",
     items: { $ref: "#/definitions/DataModelEntity" },
     definitions: {
@@ -79,8 +109,8 @@ function schemaForModel() {
         type: "object",
         required: ["$modelVersion", "$entity", "$id"],
         properties: {
-          $modelVersion: { const: dataModelV001.version },
-          $entity: { enum: Object.keys(dataModelV001.entities) },
+          $modelVersion: { const: currentModel.version },
+          $entity: { enum: Object.keys(currentModel.entities) },
           $id: { type: "string", minLength: 1 },
           $sources: {
             type: "array",
@@ -110,18 +140,7 @@ function schemaForModel() {
         additionalProperties: false,
       },
       TypedValue: {
-        oneOf: [
-          {
-            type: "object",
-            required: ["$type", "value"],
-            properties: {
-              $type: { enum: typedValueKinds },
-              value: {},
-            },
-            additionalProperties: false,
-          },
-          { $ref: "#/definitions/KeyValue" },
-        ],
+        oneOf: [...typedValueDefs, { $ref: "#/definitions/KeyValue" }],
       },
       KeyValue: {
         type: "object",
@@ -174,14 +193,14 @@ import { ExampleViewer } from "../../../../components/react/ExampleViewer";
 
 <EntitySummary entity={${mdxValue(entity)}} />
 
-<PropertyTable entity={${mdxValue(entity)}} typedValues={${mdxValue(dataModelV001.typedValues)}} />
+<PropertyTable entity={${mdxValue(entity)}} typedValues={${mdxValue(currentModel.typedValues)}} />
 
 <ExampleViewer client:load examples={${mdxValue(examples)}} />
 `;
 }
 
 function typeIndexPage() {
-  const cards = Object.entries(dataModelV001.typedValues)
+  const cards = Object.entries(currentModel.typedValues)
     .map(
       ([id, type]) => `<a class="or-type-card" href="./${id}/">
   <h2>${type.label}</h2>
@@ -193,7 +212,7 @@ function typeIndexPage() {
 
   return `---
 title: Typed values
-description: Typed value primitives supported by OpenRisk data model ${dataModelV001.version}.
+description: Typed value primitives supported by OpenRisk data model ${currentModel.version}.
 ---
 
 <p class="or-lede">Typed values make plugin output machine-readable while keeping entity properties flat.</p>
@@ -205,7 +224,7 @@ ${cards}
 }
 
 function typePage(id: TypedValueKind) {
-  const type = dataModelV001.typedValues[id];
+  const type = currentModel.typedValues[id];
   return `---
 title: ${JSON.stringify(type.label)}
 description: ${JSON.stringify(type.description)}
@@ -232,22 +251,22 @@ ${type.examples.map((example) => `- \`${JSON.stringify(example)}\``).join("\n")}
 }
 
 function modelIndexPage() {
-  const entities = Object.values(dataModelV001.entities);
+  const entities = Object.values(currentModel.entities);
   const schema = schemaForModel();
 
   return `---
-title: Data Model ${dataModelV001.version}
-description: ${JSON.stringify(dataModelV001.description)}
+title: Data Model ${currentModel.version}
+description: ${JSON.stringify(currentModel.description)}
 ---
 
 import { ModelExplorer } from "../../../components/react/ModelExplorer";
 import { ValidationPlayground } from "../../../components/react/ValidationPlayground";
 
-<p class="or-kicker">Version ${dataModelV001.version}</p>
+<p class="or-kicker">Version ${currentModel.version}</p>
 
-# ${dataModelV001.title}
+# ${currentModel.title}
 
-<p class="or-lede">${dataModelV001.description}</p>
+<p class="or-lede">${currentModel.description}</p>
 
 <ModelExplorer client:load entities={${mdxValue(entities)}} />
 
@@ -281,12 +300,12 @@ OpenRisk plugins are single TypeScript files. They return flat JSON entities tha
 
 ## Current version
 
-The current frontend-compatible data model version is \`${dataModelV001.version}\`.
+The current frontend-compatible data model version is \`${currentModel.version}\`.
 
 Every entity should include:
 
 \`\`\`json
-{ "$modelVersion": "${dataModelV001.version}" }
+{ "$modelVersion": "${currentModel.version}" }
 \`\`\`
 
 Legacy v1 plugin output without \`$modelVersion\` is migrated by current OpenRisk backend builds before scan results are stored.
@@ -308,7 +327,7 @@ OpenRisk currently executes plugins as one TypeScript or JavaScript file without
 1. Copy \`model/openrisk-types.ts\` into the top of the plugin file.
 2. Implement named entrypoint exports declared in \`plugin.json\`.
 3. Return \`DataModelEntity[]\` from each data-producing entrypoint.
-4. Validate the JSON output against \`schemas/data-model-v${dataModelV001.version}.schema.json\`.
+4. Validate the JSON output against \`schemas/data-model-v${currentModel.version}.schema.json\`.
 
 ## Example
 
@@ -334,23 +353,30 @@ async function main() {
   await mkdir(path("public/schemas"), { recursive: true });
   await mkdir(path("public/examples"), { recursive: true });
   await mkdir(path("public/model"), { recursive: true });
+  await mkdir(path("examples"), { recursive: true });
 
   // JSON schema
   const schema = schemaForModel();
-  await writeFile(path(`public/schemas/data-model-v${dataModelV001.version}.schema.json`), stableJson(schema));
+  await writeFile(path(`schemas/data-model-v${currentModel.version}.schema.json`), stableJson(schema));
+  await writeFile(path(`public/schemas/data-model-v${currentModel.version}.schema.json`), stableJson(schema));
 
   // Example output files
-  for (const entity of Object.values(dataModelV001.entities)) {
+  for (const entity of Object.values(currentModel.entities)) {
+    const exampleJson = stableJson(entityExample(entity, "common"));
+    await writeFile(
+      path(`examples/${slugEntity(entity.id)}-output.json`),
+      exampleJson,
+    );
     await writeFile(
       path(`public/examples/${slugEntity(entity.id)}-output.json`),
-      stableJson(entityExample(entity, "common")),
+      exampleJson,
     );
   }
 
   // Static manifest schema — copy from schemas/ to public/schemas/
   await copyFile(
-    path("schemas/plugin-manifest-v0.0.1.schema.json"),
-    path("public/schemas/plugin-manifest-v0.0.1.schema.json"),
+    path("schemas/plugin-manifest-v0.0.2.schema.json"),
+    path("public/schemas/plugin-manifest-v0.0.2.schema.json"),
   );
 
   // TypeScript model source files — plugins reference these directly
@@ -361,9 +387,9 @@ async function main() {
     }
   }
 
-  console.log(`Generated schema: public/schemas/data-model-v${dataModelV001.version}.schema.json`);
-  console.log(`Copied manifest schema: public/schemas/plugin-manifest-v0.0.1.schema.json`);
-  console.log(`Generated ${Object.keys(dataModelV001.entities).length} example files in public/examples/`);
+  console.log(`Generated schema: public/schemas/data-model-v${currentModel.version}.schema.json`);
+  console.log(`Copied manifest schema: public/schemas/plugin-manifest-v0.0.2.schema.json`);
+  console.log(`Generated ${Object.keys(currentModel.entities).length} example files in public/examples/`);
   console.log(`Copied model TS files to public/model/`);
 }
 

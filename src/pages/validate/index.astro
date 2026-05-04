@@ -1,12 +1,12 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { ValidatorApp } from "../../components/ValidatorApp.tsx";
-import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+import { dataModelV002 } from "@model/data-model-v0.0.2.ts";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 // Construct URL relative to the current origin so it works in both dev and prod
-const schemaUrl = new URL(`${base}/schemas/data-model-v${dataModelV001.version}.schema.json`, Astro.url).href;
-const schemaDisplayUrl = `${base}/schemas/data-model-v${dataModelV001.version}.schema.json`;
+const schemaUrl = new URL(`${base}/schemas/data-model-v${dataModelV002.version}.schema.json`, Astro.url).href;
+const schemaDisplayUrl = `${base}/schemas/data-model-v${dataModelV002.version}.schema.json`;
 ---
 
 <BaseLayout title="JSON Validator" description="Validate plugin output against the OpenRisk data model schema.">
@@ -17,7 +17,7 @@ const schemaDisplayUrl = `${base}/schemas/data-model-v${dataModelV001.version}.s
       <p class="mt-2 text-muted-foreground">
         Paste your plugin output (an array of entity objects) and validate it against the
         <a href={schemaDisplayUrl}
-           class="text-primary hover:underline" target="_blank" rel="noopener">data model v{dataModelV001.version} schema</a>.
+           class="text-primary hover:underline" target="_blank" rel="noopener">data model v{dataModelV002.version} schema</a>.
       </p>
     </div>
     <ValidatorApp client:load schemaUrl={schemaUrl} />
