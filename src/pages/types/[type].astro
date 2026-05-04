@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { dataModelV001 } from "@model/data-model-v0.0.1.ts";
+import { dataModelV002 } from "@model/data-model-v0.0.2.ts";
 
 export function getStaticPaths() {
-  return Object.entries(dataModelV001.typedValues).map(([id, type]) => ({
+  return Object.entries(dataModelV002.typedValues).map(([id, type]) => ({
     params: { type: id },
     props: { id, type },
   }));
@@ -13,7 +13,7 @@ const { id, type } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 // Find entities that use this type
-const usedBy = Object.values(dataModelV001.entities).filter((entity) =>
+const usedBy = Object.values(dataModelV002.entities).filter((entity) =>
   Object.values(entity.props).some((prop) => prop.types.includes(id))
 );
 ---

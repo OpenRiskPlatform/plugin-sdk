@@ -2,6 +2,7 @@ export type TypedValueKind =
   | "string"
   | "number"
   | "boolean"
+  | "jurisdiction-iso-3166-2"
   | "date-iso8601"
   | "date-partial-iso8601"
   | "date-time-iso8601"
@@ -25,6 +26,7 @@ export interface TypedValueSpec {
   description: string;
   examples: unknown[];
   detail: string;
+  allowedValues?: readonly unknown[];
 }
 
 export interface PropertySpec {

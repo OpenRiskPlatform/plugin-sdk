@@ -4,7 +4,7 @@ import { manifestSchemaUrl, dataModelSchemaUrl } from "../../lib/siteUrl.ts";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 // Local URL — works in both dev server and production
-const manifestSchemaLocalUrl = new URL(`${base}/schemas/plugin-manifest-v0.0.1.schema.json`, Astro.url).href;
+const manifestSchemaLocalUrl = new URL(`${base}/schemas/plugin-manifest-v0.0.2.schema.json`, Astro.url).href;
 
 const exampleManifest = {
   "$schema": manifestSchemaUrl,
@@ -23,7 +23,7 @@ const exampleManifest = {
       "function": "searchPerson",
       "inputs": [
         { "name": "name", "title": "Full name", "type": "string" },
-        { "name": "country", "title": "Country", "type": { "name": "enum", "values": ["SK", "CZ", "PL"] }, "optional": true }
+        { "name": "jurisdiction", "title": "Jurisdiction", "type": { "name": "jurisdiction-iso-3166-2" }, "optional": true }
       ]
     }
   ],
@@ -113,7 +113,7 @@ const exampleManifest = {
       <h2 class="mb-4 text-base font-semibold">Field Type Values</h2>
       <p class="mb-3 text-sm text-muted-foreground">The <code class="font-mono bg-muted px-1 rounded">type</code> field in settings, metrics, and entrypoint inputs can be:</p>
       <div class="flex flex-wrap gap-2">
-        {["string", "number", "boolean", "integer", "date", "url"].map((t) => (
+        {["string", "number", "boolean", "integer", "date", "url", "jurisdiction-iso-3166-2"].map((t) => (
           <code class="rounded-md border border-border bg-muted px-3 py-1.5 text-sm font-mono">{t}</code>
         ))}
         <code class="rounded-md border border-primary/40 bg-primary/5 px-3 py-1.5 text-sm font-mono">{"{ name: \"enum\", values: [...] }"}</code>
@@ -127,7 +127,7 @@ const exampleManifest = {
       <code class="block font-mono text-xs text-primary break-all mb-3">{manifestSchemaUrl}</code>
       <a
         href={manifestSchemaLocalUrl}
-        download="plugin-manifest-v0.0.1.schema.json"
+        download="plugin-manifest-v0.0.2.schema.json"
         class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-accent transition-colors"
       >
         ↓ Download schema

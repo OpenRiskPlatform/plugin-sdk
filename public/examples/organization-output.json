@@ -1,6 +1,6 @@
 [
   {
-    "$modelVersion": "0.0.1",
+    "$modelVersion": "0.0.2",
     "$entity": "entity.organization",
     "$id": "example:organization",
     "$props": {
@@ -20,6 +20,12 @@
         {
           "$type": "string",
           "value": "SK"
+        }
+      ],
+      "jurisdiction": [
+        {
+          "$type": "jurisdiction-iso-3166-2",
+          "value": "sk"
         }
       ],
       "status": [

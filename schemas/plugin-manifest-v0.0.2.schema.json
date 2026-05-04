@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openriskplatform.github.io/plugin-sdk/schemas/plugin-manifest-v0.0.2.schema.json",
+  "title": "OpenRisk Plugin Manifest 0.0.2",
+  "description": "Schema reference for OpenRisk plugin.json files. This mirrors the current OpenRisk app manifest contract.",
+  "type": "object",
+  "required": ["id", "version", "name", "description", "authors", "license", "main", "entrypoints"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$" },
+    "version": { "type": "string" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "url": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "license": { "type": "string", "minLength": 1 },
+    "main": { "type": "string", "pattern": "^[^/].*\\.(ts|js)$" },
+    "entrypoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/Entrypoint" }
+    },
+    "settings": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Field" }
+    },
+    "metrics": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Field" }
+    },
+    "repository": { "type": "string" },
+    "homepage": { "type": "string" },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "icon": { "type": "string" },
+    "update_metrics_fn": { "type": "string" }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Entrypoint": {
+      "type": "object",
+      "required": ["id", "name", "function", "inputs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "function": { "type": "string", "pattern": "^[a-zA-Z_$][a-zA-Z0-9_$]*$" },
+        "inputs": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Field" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Field": {
+      "type": "object",
+      "required": ["name", "type", "title"],
+      "properties": {
+        "name": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "optional": { "type": "boolean" },
+        "required": { "type": "boolean" },
+        "default": {},
+        "type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["string", "number", "boolean", "integer", "date", "url", "jurisdiction-iso-3166-2"]
+            },
+            {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "enum": ["string", "number", "boolean", "integer", "date", "url", "enum", "jurisdiction-iso-3166-2"]
+                },
+                "values": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
