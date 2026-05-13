@@ -65,6 +65,23 @@ export const dataModelV002 = defineDataModel({
       examples: ["sk", "us_de"],
       allowedValues: JURISDICTION_ISO_3166_2_CODES,
     },
+    "relative-close-associate": {
+      label: "Relative / Close Associate",
+      jsonType: "object",
+      description: "Flat relative or close associate reference.",
+      detail:
+        "Use for source-provided relatives and close associates when the source provides a display name and optional relationship label.",
+      examples: [{ name: "John Example", relation: "spouse" }],
+      valueSchema: {
+        type: "object",
+        required: ["name"],
+        properties: {
+          name: { type: "string", minLength: 1 },
+          relation: { type: "string", minLength: 1 },
+        },
+        additionalProperties: false,
+      },
+    },
     "date-iso8601": {
       label: "ISO Date",
       jsonType: "string",
@@ -196,6 +213,14 @@ export const dataModelV002 = defineDataModel({
           examples: ["+421 900 000 000"],
           frontend: "primary",
         },
+        relativeCloseAssociates: {
+          label: "Relatives and Close Associates",
+          types: ["relative-close-associate"],
+          multiplicity: "many",
+          description: "Known relatives or close associates connected to the person.",
+          examples: [{ name: "John Example", relation: "spouse" }],
+          frontend: "primary",
+        },
         pepStatus: {
           label: "PEP Status",
           types: ["boolean"],
@@ -217,7 +242,13 @@ export const dataModelV002 = defineDataModel({
       },
       examples: {
         minimal: { name: "Jane Example" },
-        common: { name: "Jane Example", aliases: ["J. Example"], pepStatus: false, sanctioned: false },
+        common: {
+          name: "Jane Example",
+          aliases: ["J. Example"],
+          relativeCloseAssociates: [{ name: "John Example", relation: "spouse" }],
+          pepStatus: false,
+          sanctioned: false,
+        },
         full: {
           name: "Jane Example",
           aliases: ["J. Example"],
@@ -227,6 +258,7 @@ export const dataModelV002 = defineDataModel({
           jurisdiction: ["sk"],
           addresses: ["Main Street 1, Bratislava"],
           emails: ["jane@example.com"],
+          relativeCloseAssociates: [{ name: "John Example", relation: "spouse" }],
           pepStatus: true,
           sanctioned: false,
         },

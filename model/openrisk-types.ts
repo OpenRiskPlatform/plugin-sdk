@@ -53,6 +53,12 @@ interface BusinessSubject {
     effectiveTo?: string;
 }
 
+/** A flat relative or close associate reference. */
+interface RelativeCloseAssociate {
+    name: string;
+    relation?: string;
+}
+
 const OPENRISK_JURISDICTION_ISO_3166_2_CODES = [
     "al", "by", "be", "bg", "hr", "cy", "cz", "dk", "fi", "fr", "de", "gi",
     "gr", "gg", "gl", "is", "ie", "im", "je", "lv", "li", "lu", "mt", "md",
@@ -90,6 +96,7 @@ interface PersonPayload {
     addresses?: string[];
     emails?: string[];
     phones?: string[];
+    relativeCloseAssociates?: RelativeCloseAssociate[];
     /** true = PEP confirmed, false = clear, undefined = not evaluated. */
     isPep?: boolean;
     pepDatasets?: string[];
@@ -202,6 +209,10 @@ const _tv = {
         $type: "jurisdiction-iso-3166-2",
         value: v,
     }),
+    rca: (v: RelativeCloseAssociate): TypedValue<RelativeCloseAssociate> => ({
+        $type: "relative-close-associate",
+        value: v.relation ? { name: v.name, relation: v.relation } : { name: v.name },
+    }),
     url: (v: string): TypedValue<string> => ({ $type: "url", value: v }),
     addr: (v: string): TypedValue<string> => ({ $type: "address", value: v }),
     date: (v: string): TypedValue<string> => ({
@@ -257,6 +268,7 @@ function buildPerson(opts: _OR_Opts<PersonPayload>): DataModelEntity {
     _or_many(props, "addresses", (p.addresses ?? []).map(_tv.addr));
     _or_many(props, "emails", (p.emails ?? []).map(_tv.str));
     _or_many(props, "phones", (p.phones ?? []).map(_tv.str));
+    _or_many(props, "relativeCloseAssociates", (p.relativeCloseAssociates ?? []).map(_tv.rca));
     _or_set(props, "notes", p.notes ? _tv.str(p.notes) : undefined);
     _or_set(props, "pepStatus", p.isPep !== undefined ? _tv.bool(p.isPep) : undefined);
     _or_set(props, "sanctioned", p.isSanctioned !== undefined ? _tv.bool(p.isSanctioned) : undefined);

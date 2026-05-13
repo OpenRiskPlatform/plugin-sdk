@@ -16,6 +16,15 @@
           "value": "J. Example"
         }
       ],
+      "relativeCloseAssociates": [
+        {
+          "$type": "relative-close-associate",
+          "value": {
+            "name": "John Example",
+            "relation": "spouse"
+          }
+        }
+      ],
       "pepStatus": [
         {
           "$type": "boolean",

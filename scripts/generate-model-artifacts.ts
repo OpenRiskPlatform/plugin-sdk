@@ -67,6 +67,10 @@ function entityExample(entity: EntitySpec, variant: "minimal" | "common" | "full
 }
 
 function valueSchemaFor(type: TypedValueSpec) {
+  if (type.valueSchema) {
+    return type.valueSchema;
+  }
+
   const base =
     type.jsonType === "object"
       ? { type: "object" as const }
