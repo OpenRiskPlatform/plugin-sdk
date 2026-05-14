@@ -3,6 +3,7 @@ export type TypedValueKind =
   | "number"
   | "boolean"
   | "jurisdiction-iso-3166-2"
+  | "relative-close-associate"
   | "date-iso8601"
   | "date-partial-iso8601"
   | "date-time-iso8601"
@@ -27,6 +28,7 @@ export interface TypedValueSpec {
   examples: unknown[];
   detail: string;
   allowedValues?: readonly unknown[];
+  valueSchema?: Record<string, unknown>;
 }
 
 export interface PropertySpec {
