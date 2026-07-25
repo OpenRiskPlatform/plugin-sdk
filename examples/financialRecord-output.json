@@ -1,6 +1,6 @@
 [
   {
-    "$modelVersion": "0.0.2",
+    "$modelVersion": "0.0.3",
     "$entity": "entity.financialRecord",
     "$id": "example:financialRecord",
     "$props": {

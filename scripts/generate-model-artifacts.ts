@@ -1,11 +1,11 @@
 import { mkdir, writeFile, copyFile, readdir } from "node:fs/promises";
-import { dataModelV002 } from "../model/data-model-v0.0.2.ts";
+import { dataModelV003 } from "../model/data-model-v0.0.3.ts";
 import type { EntitySpec, PropertySpec, TypedValueKind, TypedValueSpec } from "../model/define-model.ts";
 import { SITE_BASE } from "../site.config.ts";
 
 const root = new URL("../", import.meta.url);
 
-const currentModel = dataModelV002;
+const currentModel = dataModelV003;
 
 function path(name: string) {
   return new URL(name, root);

@@ -1,5 +1,5 @@
 // =============================================================================
-// openrisk-types.ts  ·  OpenRisk Canonical Entity Types  ·  v0.0.2
+// openrisk-types.ts  ·  OpenRisk Canonical Entity Types  ·  v0.0.3
 //
 // Paste this block verbatim at the top of each plugin file.
 // All shared identifiers use _or_ / _tv prefixes to avoid collisions.
@@ -21,7 +21,7 @@ interface _OR_KV {
 }
 
 interface DataModelEntity {
-    $modelVersion: "0.0.2";
+    $modelVersion: "0.0.3";
     $entity: string;
     $id: string;
     $sources?: Array<{ name: string; source: string }>;
@@ -29,7 +29,7 @@ interface DataModelEntity {
     $extra?: _OR_KV[];
 }
 
-const OPENRISK_DATA_MODEL_VERSION = "0.0.2" as const;
+const OPENRISK_DATA_MODEL_VERSION = "0.0.3" as const;
 
 // ---------------------------------------------------------------------------
 // Sub-types used inside canonical payloads
@@ -99,6 +99,8 @@ interface PersonPayload {
     relativeCloseAssociates?: RelativeCloseAssociate[];
     /** true = PEP confirmed, false = clear, undefined = not evaluated. */
     isPep?: boolean;
+    /** true = PEP relative/close associate, false = clear, undefined = not evaluated. */
+    isPepRca?: boolean;
     pepDatasets?: string[];
     pepMunicipality?: string;
     pepState?: string;
@@ -271,6 +273,7 @@ function buildPerson(opts: _OR_Opts<PersonPayload>): DataModelEntity {
     _or_many(props, "relativeCloseAssociates", (p.relativeCloseAssociates ?? []).map(_tv.rca));
     _or_set(props, "notes", p.notes ? _tv.str(p.notes) : undefined);
     _or_set(props, "pepStatus", p.isPep !== undefined ? _tv.bool(p.isPep) : undefined);
+    _or_set(props, "isPepRca", p.isPepRca !== undefined ? _tv.bool(p.isPepRca) : undefined);
     _or_set(props, "sanctioned", p.isSanctioned !== undefined ? _tv.bool(p.isSanctioned) : undefined);
 
     const extra = _or_extra(opts.extra);
