@@ -1,6 +1,6 @@
 [
   {
-    "$modelVersion": "0.0.2",
+    "$modelVersion": "0.0.3",
     "$entity": "entity.person",
     "$id": "example:person",
     "$props": {
@@ -26,6 +26,12 @@
         }
       ],
       "pepStatus": [
+        {
+          "$type": "boolean",
+          "value": false
+        }
+      ],
+      "isPepRca": [
         {
           "$type": "boolean",
           "value": false

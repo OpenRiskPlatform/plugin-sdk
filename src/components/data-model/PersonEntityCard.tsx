@@ -17,6 +17,7 @@ export function PersonEntityCard({ entity }: { entity: DataModelEntity }) {
     const emails = propList(entity, "emails");
     const phones = propList(entity, "phones");
     const pepStatus = firstProp(entity, "pepStatus");
+    const pepRcaStatus = firstProp(entity, "isPepRca");
     const sanctioned = firstProp(entity, "sanctioned");
 
     const notesText =
@@ -26,7 +27,12 @@ export function PersonEntityCard({ entity }: { entity: DataModelEntity }) {
             : null;
 
     const isPep = pepStatus?.value === true;
+    const isPepRca = pepRcaStatus?.value === true;
     const isSanctioned = sanctioned?.value === true;
+    const isExplicitlyClear =
+        pepStatus?.value === false
+        && sanctioned?.value === false
+        && pepRcaStatus?.value !== true;
 
     return (
         <Card>
@@ -52,7 +58,12 @@ export function PersonEntityCard({ entity }: { entity: DataModelEntity }) {
                                 ⚠️ PEP
                             </Badge>
                         )}
-                        {!isSanctioned && !isPep && (pepStatus !== undefined || sanctioned !== undefined) && (
+                        {isPepRca && (
+                            <Badge variant="destructive" className="text-xs font-semibold bg-orange-600 hover:bg-orange-700">
+                                PEP: RCA
+                            </Badge>
+                        )}
+                        {isExplicitlyClear && (
                             <Badge variant="secondary" className="text-xs font-semibold text-green-700 dark:text-green-400">
                                 ✓ No PEP / No Sanctions
                             </Badge>
@@ -74,7 +85,7 @@ export function PersonEntityCard({ entity }: { entity: DataModelEntity }) {
                 )}
                 <EntityCardFooter
                     entity={entity}
-                    excludePropKeys={["name", "notes", "aliases", "birthDate", "birthPlace", "nationalities", "addresses", "emails", "phones", "pepStatus", "sanctioned"]}
+                    excludePropKeys={["name", "notes", "aliases", "birthDate", "birthPlace", "nationalities", "addresses", "emails", "phones", "pepStatus", "isPepRca", "sanctioned"]}
                 />
             </CardContent>
         </Card>
